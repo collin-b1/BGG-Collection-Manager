@@ -1,9 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.TableView;
 import java.awt.*;
-import java.util.*;
+import java.util.PriorityQueue;
 
 /**
  * Sources:
@@ -51,12 +50,12 @@ public class GamePanel extends JPanel {
 
     public void populateTable() {
         clearTable();
-        PriorityQueue<BoardGame> copy = new PriorityQueue<BoardGame>(values);
+        PriorityQueue<BoardGame> copy = new PriorityQueue<>(values);
         while (!copy.isEmpty()) {
             BoardGame bg = copy.poll();
             model.addRow(new Object[]{
                     bg.getName(),
-                    String.format("%.2f", Double.valueOf(bg.getStats().getDifficulty())),
+                    String.format("%.2f", bg.getStats().getDifficulty()),
                     bg.getStats().getMinPlayers() + "-" + bg.getStats().getMaxPlayers(),
                     bg.getStats().getMinPlayingTime() + "-" + bg.getStats().getMaxPlayingTime(),
                     bg.getStats().getRating()
@@ -88,6 +87,10 @@ public class GamePanel extends JPanel {
             }
         };
         table.setModel(model);
+    }
+
+    public JTable getTable() {
+        return this.table;
     }
 
     public PriorityQueue<BoardGame> getValues() {

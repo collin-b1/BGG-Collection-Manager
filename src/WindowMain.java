@@ -1,29 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+
+/*
+ * This is not the entry point to the Java application, go to the "Main" class
+ */
 
 public class WindowMain extends JFrame {
 
     public static Options.SortType sortType = Options.SortType.NAME;
 
-    private Main instance;
-    private JMenuBar menuBar;
-    private JMenu fileMenu;
-    private JMenu editMenu;
-    private JMenu helpMenu;
-    private JMenuItem loadItem;
-    private JMenuItem useSampleItem;
-    private JMenuItem clearTableItem;
+    private final Main instance;
     private JMenuItem exitItem;
     private JMenuItem faqItem;
 
-    private JPanel container;
-    private JPanel sideOptionsPanel;
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
     //private SideButtonPanel sideButtonPanel;
 
     public WindowMain(Main instance) {
@@ -33,16 +26,18 @@ public class WindowMain extends JFrame {
         setSize(1000,600);
 
         // Menu Bar
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu("File");
-        loadItem = new JMenuItem("Load List");
-        useSampleItem = new JMenuItem("Use sample data");
-        clearTableItem = new JMenuItem("Clear table");
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem loadItem = new JMenuItem("Load List");
+        JMenuItem useSampleItem = new JMenuItem("Use Sample Data");
+        JMenuItem clearTableItem = new JMenuItem("Clear Table");
+        JMenuItem printItem = new JMenuItem("Print Table");
         fileMenu.add(loadItem);
         fileMenu.add(useSampleItem);
         fileMenu.add(clearTableItem);
-        editMenu = new JMenu("Edit");
-        helpMenu = new JMenu("Help");
+        fileMenu.add(printItem);
+        JMenu editMenu = new JMenu("Edit");
+        JMenu helpMenu = new JMenu("Help");
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
@@ -51,7 +46,7 @@ public class WindowMain extends JFrame {
         setJMenuBar(menuBar);
 
         // Create container
-        container = new JPanel();
+        JPanel container = new JPanel();
         // Set container layout to be 2 rows, 2 columns
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -71,7 +66,7 @@ public class WindowMain extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         container.add(topBarPanel, gbc);
 
-        sideOptionsPanel = new OptionsPanel(this);
+        JPanel sideOptionsPanel = new OptionsPanel(this);
         gbc.insets = new Insets(7,7,7,7);
         gbc.weightx = 0; // This gives the table priority for remaining space
         gbc.weighty = 1;
@@ -116,8 +111,16 @@ public class WindowMain extends JFrame {
             loadGames(instance.getGameList());
         });
 
-        clearTableItem.addActionListener(e -> {
-            clearGames();
+        clearTableItem.addActionListener(e -> clearGames());
+
+        // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#printing
+        printItem.addActionListener(e -> {
+            MessageFormat header = new MessageFormat("Page {0,number,integer}");
+            try {
+                getGamePanel().getTable().print(JTable.PrintMode.FIT_WIDTH, header, null);
+            } catch (java.awt.print.PrinterException ex) {
+                System.err.format("Cannot print %s%n", ex.getMessage());
+            }
         });
     }
 

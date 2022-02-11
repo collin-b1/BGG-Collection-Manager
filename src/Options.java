@@ -1,17 +1,13 @@
-public class Options implements IOptions {
+public class Options {
 
     public enum SortType {
-        NAME("Name"),
-        PLAYERS("Players"),
-        MINUTES("Minutes"),
-        COMPLEXITY("Complexity"),
-        RATING("Rating");
+        NAME(),
+        PLAYERS(),
+        MINUTES(),
+        COMPLEXITY(),
+        RATING();
 
-        private String label;
-
-        SortType(String label) {
-            this.label = label;
-        }
+        SortType() {}
     }
 
     // Instance variables

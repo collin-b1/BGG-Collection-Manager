@@ -1,7 +1,7 @@
 public class BoardGame implements Comparable<BoardGame> {
 
-    private String name;
-    private Options stats;
+    private final String name;
+    private final Options stats;
 
     public BoardGame(String name, Options stats) {
         this.name = name;
@@ -17,7 +17,7 @@ public class BoardGame implements Comparable<BoardGame> {
     }
 
     public String toString() {
-        return this.name;
+        return "" + this.getName();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class BoardGame implements Comparable<BoardGame> {
             case RATING:
                 Double rating = getStats().getRating();
                 Double otherRating = o.getStats().getRating();
-                return rating.compareTo(otherRating);
+                return otherRating.compareTo(rating);
             case PLAYERS:
                 Integer players = getStats().getMaxPlayers();
                 Integer otherPlayers = o.getStats().getMaxPlayers();
@@ -42,6 +42,5 @@ public class BoardGame implements Comparable<BoardGame> {
                 Double otherComplexity = o.getStats().getDifficulty();
                 return complexity.compareTo(otherComplexity);
         }
-
     }
 }

@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 /* Sources
@@ -9,14 +8,15 @@ import java.util.List;
  */
 public class CSVReader {
 
-    private File file;
-    private List target;
+    private final File file;
+    private final List<BoardGame> target;
 
     public CSVReader(String path, List<BoardGame> target) {
         this.file = new File(path);
         this.target = target;
     }
 
+    // Function to read board game list from .CSV file
     public boolean read() throws IOException {
         // Attempt to create a BufferedReader with the file
         BufferedReader br;
@@ -34,7 +34,6 @@ public class CSVReader {
         while ((line = br.readLine()) != null) {
             // Split line by commas
             String[] values = line.split("\",\"");
-            System.out.println(Arrays.toString(values));
             BoardGame b;
             Options o = new Options()
                     .setRating(Double.parseDouble(values[20]))
@@ -44,14 +43,13 @@ public class CSVReader {
                     .setMinPlayingTime(Integer.parseInt(values[31]))
                     .setMaxPlayingTime(Integer.parseInt(values[30]));
 
-            if (values[42] != "expansion") {
+            if (!values[42].equals("expansion")) {
                 b = new BoardGame(values[0].substring(1), o);
                 b.getStats().setIsExpansion(false);
             } else {
                 b = new ExpansionGame(values[0].substring(1), o);
                 b.getStats().setIsExpansion(true);
             }
-
             target.add(b);
         }
 

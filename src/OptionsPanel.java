@@ -1,7 +1,8 @@
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.PriorityQueue;
 
 public class OptionsPanel extends JPanel {
 
@@ -33,17 +34,13 @@ public class OptionsPanel extends JPanel {
 
         // Complexity Field/Label
         complexityField = new JTextField();
-        JLabel complexityLabel = new JLabel("Complexity: ");
+        JLabel complexityLabel = new JLabel("Max Difficulty: ");
         complexityLabel.setLabelFor(complexityField);
 
         // Expansions Field/Label
         expansionsButton = new JCheckBox();
         JLabel expansionsLabel = new JLabel("Expansions?: ");
         expansionsLabel.setLabelFor(expansionsButton);
-
-        /**
-         *  Add labels, fields, panels to self
-         */
 
         gbc.anchor = GridBagConstraints.WEST;
 
@@ -112,37 +109,42 @@ public class OptionsPanel extends JPanel {
         registerButtonActions();
     }
 
+    public void filter() {
+        Options options = getOptions();
+
+        PriorityQueue<BoardGame> values = windowMain.getGamePanel().getValues();
+        ArrayList<BoardGame> toRemove = new ArrayList<>();
+
+        Iterator<BoardGame> iterator = values.iterator();
+
+        while (iterator.hasNext()) {
+            BoardGame next = iterator.next();
+            if (!next.getStats().matches(options)) {
+                toRemove.add(next);
+            }
+        }
+
+        for (BoardGame bg : toRemove) {
+            values.remove(bg);
+        }
+
+        windowMain.getGamePanel().populateTable();
+    }
+
     public void registerButtonActions() {
         sideButtonPanel.getBestFitsButton().addActionListener(e -> {
             windowMain.setSortType(Options.SortType.RATING);
             windowMain.resetGames();
+            filter();
             JFrame frame = new JFrame();
             BoardGame best = windowMain.getGamePanel().getValues().peek();
             Options options = best.getStats();
-            String optText = String.format("Difficulty: %.3f", options.getDifficulty());
-            JOptionPane.showMessageDialog(frame, optText, "Best Fit", JOptionPane.INFORMATION_MESSAGE);
+            String optText = String.format("%s%nDifficulty: %.2f/5.0%nTime: %s minutes", best.getName(), options.getDifficulty(), options.getMaxPlayingTime());
+            JOptionPane.showMessageDialog(frame, optText, best.getName(), JOptionPane.INFORMATION_MESSAGE);
         });
 
         sideButtonPanel.getFilterButton().addActionListener(e -> {
-            Options options = getOptions();
-
-            PriorityQueue<BoardGame> values = windowMain.getGamePanel().getValues();
-            ArrayList<BoardGame> toRemove = new ArrayList<>();
-
-            Iterator iterator = values.iterator();
-
-            while (iterator.hasNext()) {
-                BoardGame next = ((BoardGame)iterator.next());
-                if (!next.getStats().matches(options)) {
-                    toRemove.add(next);
-                }
-            }
-
-            for (BoardGame bg : toRemove) {
-                values.remove(bg);
-            }
-
-            windowMain.getGamePanel().populateTable();
+            filter();
         });
 
         sideButtonPanel.getResetButton().addActionListener(e -> {
@@ -171,7 +173,7 @@ public class OptionsPanel extends JPanel {
         }
         opt.setDifficulty(difficulty);
 
-        boolean expansions = expansionsButton.isEnabled();
+        boolean expansions = expansionsButton.isSelected();
         opt.setIsExpansion(expansions);
         return opt;
     }
