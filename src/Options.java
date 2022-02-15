@@ -13,6 +13,7 @@ public class Options {
     // Instance variables
     private int minPlayers;
     private int maxPlayers;
+    private int[] recPlayers;
     private int minPlayingTime;
     private int maxPlayingTime;
     private double rating;
@@ -37,6 +38,15 @@ public class Options {
 
     public int getMaxPlayers() {
         return this.maxPlayers;
+    }
+
+    public Options setRecPlayers(int[] recPlayers) {
+        this.recPlayers = recPlayers;
+        return this;
+    }
+
+    public int[] getRecPlayers() {
+        return this.recPlayers;
     }
 
     public Options setMinPlayingTime(int minPlayingTime) {

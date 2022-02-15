@@ -2,13 +2,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.PriorityQueue;
-
-/**
- * Sources:
- * https://www.tutorialspoint.com/how-to-set-the-color-to-alternate-rows-of-jtable-in-java
- * https://stackoverflow.com/questions/4577792/how-to-clear-jtable/4578501
-  */
 
 public class GamePanel extends JPanel {
 
@@ -17,7 +12,7 @@ public class GamePanel extends JPanel {
     private DefaultTableModel model;
     private JTable table;
 
-    public static final String[] columns = {"Name", "Difficulty", "Players", "Time", "Rating"};
+    public static final String[] columns = {"Name", "Difficulty", "Players", "Best Players", "Time", "Rating"};
     private PriorityQueue<BoardGame> values;
 
     public GamePanel() {
@@ -54,11 +49,12 @@ public class GamePanel extends JPanel {
         while (!copy.isEmpty()) {
             BoardGame bg = copy.poll();
             model.addRow(new Object[]{
-                    bg.getName(),
+                    bg.getName() + (bg.getStats().isExpansion() ? " (exp)" : ""),
                     String.format("%.2f", bg.getStats().getDifficulty()),
                     bg.getStats().getMinPlayers() + "-" + bg.getStats().getMaxPlayers(),
+                    Arrays.toString(bg.getStats().getRecPlayers()).replace("[","").replace("]",""),
                     bg.getStats().getMinPlayingTime() + "-" + bg.getStats().getMaxPlayingTime(),
-                    bg.getStats().getRating()
+                    String.format("%.2f", bg.getStats().getRating()),
             });
         }
     }

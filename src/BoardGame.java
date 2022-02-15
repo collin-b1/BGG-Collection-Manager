@@ -1,11 +1,15 @@
+import java.util.Arrays;
+
 public class BoardGame implements Comparable<BoardGame> {
 
     private final String name;
     private final Options stats;
+    private final int id;
 
-    public BoardGame(String name, Options stats) {
+    public BoardGame(String name, Options stats, int id) {
         this.name = name;
         this.stats = stats;
+        this.id = id;
     }
 
     public String getName() {
@@ -16,8 +20,10 @@ public class BoardGame implements Comparable<BoardGame> {
         return this.stats;
     }
 
+    public int getId() { return this.id; }
+
     public String toString() {
-        return "" + this.getName();
+        return this.getName() + ":" + this.getId() + ":" + Arrays.toString(this.getStats().getRecPlayers());
     }
 
     @Override

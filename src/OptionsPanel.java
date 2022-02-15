@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PriorityQueue;
+import java.util.stream.IntStream;
 
 public class OptionsPanel extends JPanel {
 
@@ -133,18 +135,47 @@ public class OptionsPanel extends JPanel {
 
     public void registerButtonActions() {
         sideButtonPanel.getBestFitsButton().addActionListener(e -> {
+            if (!optionsFilled()) return;
             windowMain.setSortType(Options.SortType.RATING);
             windowMain.resetGames();
             filter();
             JFrame frame = new JFrame();
-            BoardGame best = windowMain.getGamePanel().getValues().peek();
-            Options options = best.getStats();
-            String optText = String.format("%s%nDifficulty: %.2f/5.0%nTime: %s minutes", best.getName(), options.getDifficulty(), options.getMaxPlayingTime());
-            JOptionPane.showMessageDialog(frame, optText, best.getName(), JOptionPane.INFORMATION_MESSAGE);
+
+            PriorityQueue<BoardGame> list = windowMain.getGamePanel().getValues();
+
+            BoardGame bestRating = list.peek();
+            BoardGame bestPlayers = list.peek();
+
+            while (!list.isEmpty()) {
+                if (IntStream.of(list.peek().getStats().getRecPlayers()).anyMatch(x -> x == getOptions().getMinPlayers())) {
+                    bestPlayers = list.peek();
+                    break;
+                }
+                list.poll();
+            }
+
+            String optText = String.format(
+                    "BEST RATING%n%s%nDifficulty: %.2f/5.0%nTime: %s minutes%nRating: %.2f%n%nBEST AT %s PLAYER(S)%n%s%nDifficulty: %.2f/5.0%nTime: %s minutes%nRec. Players: %s",
+                    bestRating.getName(),
+                    bestRating.getStats().getDifficulty(),
+                    bestRating.getStats().getMaxPlayingTime(),
+                    bestRating.getStats().getRating(),
+                    getOptions().getMinPlayers(),
+                    bestPlayers.getName(),
+                    bestPlayers.getStats().getDifficulty(),
+                    bestPlayers.getStats().getMaxPlayingTime(),
+                    Arrays.toString(bestPlayers.getStats().getRecPlayers())
+            );
+
+
+
+            JOptionPane.showMessageDialog(frame, optText, "Recommended Game(s)", JOptionPane.INFORMATION_MESSAGE);
         });
 
         sideButtonPanel.getFilterButton().addActionListener(e -> {
-            filter();
+            if (optionsFilled()) {
+                filter();
+            }
         });
 
         sideButtonPanel.getResetButton().addActionListener(e -> {
@@ -167,7 +198,7 @@ public class OptionsPanel extends JPanel {
         }
         opt.setMaxPlayingTime(minutes);
 
-        double difficulty = 10.0;
+        double difficulty = 5.0;
         if (!complexityField.getText().equals("")) {
             difficulty = Double.parseDouble(complexityField.getText());
         }
@@ -176,5 +207,9 @@ public class OptionsPanel extends JPanel {
         boolean expansions = expansionsButton.isSelected();
         opt.setIsExpansion(expansions);
         return opt;
+    }
+
+    boolean optionsFilled() {
+        return playersField.getText().length() > 0 && minutesField.getText().length() > 0 && complexityField.getText().length() > 0;
     }
 }

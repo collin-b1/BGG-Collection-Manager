@@ -13,8 +13,6 @@ public class WindowMain extends JFrame {
     public static Options.SortType sortType = Options.SortType.NAME;
 
     private final Main instance;
-    private JMenuItem exitItem;
-    private JMenuItem faqItem;
 
     private final GamePanel gamePanel;
     //private SideButtonPanel sideButtonPanel;
@@ -23,7 +21,7 @@ public class WindowMain extends JFrame {
         super("GameHub");
         this.instance = instance;
 
-        setSize(1000,600);
+        setSize(1080,600);
 
         // Menu Bar
         JMenuBar menuBar = new JMenuBar();
@@ -36,12 +34,8 @@ public class WindowMain extends JFrame {
         fileMenu.add(useSampleItem);
         fileMenu.add(clearTableItem);
         fileMenu.add(printItem);
-        JMenu editMenu = new JMenu("Edit");
-        JMenu helpMenu = new JMenu("Help");
 
         menuBar.add(fileMenu);
-        menuBar.add(editMenu);
-        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
@@ -91,7 +85,6 @@ public class WindowMain extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);// Close entire program on window exit
         setVisible(true);                       // Show window
 
-        // https://stackoverflow.com/a/29210689
         loadItem.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setCurrentDirectory(new java.io.File("."));
@@ -113,7 +106,6 @@ public class WindowMain extends JFrame {
 
         clearTableItem.addActionListener(e -> clearGames());
 
-        // https://docs.oracle.com/javase/tutorial/uiswing/components/table.html#printing
         printItem.addActionListener(e -> {
             MessageFormat header = new MessageFormat("Page {0,number,integer}");
             try {
@@ -128,6 +120,7 @@ public class WindowMain extends JFrame {
         return gamePanel;
     }
 
+    // Load predefined board game list into gamePanel table
     public void loadGames(ArrayList<BoardGame> gameList) {
         for (BoardGame bg : gameList) {
             gamePanel.addGame(bg);
