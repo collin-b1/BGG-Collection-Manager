@@ -1,11 +1,13 @@
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class CSVReader {
 
+    // The CSV file to be read
     private final File file;
+
+    // The "target" list which should store the BoardGame objects
     private final List<BoardGame> target;
 
     public CSVReader(String path, List<BoardGame> target) {
@@ -14,13 +16,13 @@ public class CSVReader {
     }
 
     // Function to read board game list from .CSV file
-    public boolean read() throws IOException {
+    public void read() throws IOException {
         // Attempt to create a BufferedReader with the file
         BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            return false;
+            return;
         }
 
         // Get past first line with headers
@@ -32,7 +34,7 @@ public class CSVReader {
             // Split line by commas
             String[] values = line.split("\",\"");
 
-            int bestPlayers[];
+            int[] bestPlayers;
             if (values[34].length() > 0) {
                 bestPlayers = Stream.of(values[34].split(",")).mapToInt(Integer::parseInt).toArray();
             } else {
@@ -41,6 +43,9 @@ public class CSVReader {
 
             BoardGame b;
             int id = Integer.parseInt(values[1]);
+
+            // Instantiate new Options object to be stored inside
+            // the BoardGame object
             Options o = new Options()
                     .setRating(Double.parseDouble(values[20]))
                     .setDifficulty(Double.parseDouble(values[22]))
@@ -60,7 +65,7 @@ public class CSVReader {
             target.add(b);
         }
 
+        // Closes the BufferedReader stream and it's resources
         br.close();
-        return true;
     }
 }

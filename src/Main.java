@@ -14,7 +14,7 @@ public class Main {
         new WindowMain(this);
     }
 
-
+    // Create a new CSVReader object with the target being the gameList ArrayList
     public void readFromPath(String path) {
         CSVReader reader = new CSVReader(path, gameList);
         try {

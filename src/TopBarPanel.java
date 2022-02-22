@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class TopBarPanel extends JPanel {
 
-    private final JComboBox sortMenu;
+    private final JComboBox<Options.SortType> sortMenu;
     private final String[] options = {
             "Name",
             "Players",
@@ -13,7 +13,7 @@ public class TopBarPanel extends JPanel {
 
     public TopBarPanel(WindowMain mainWindow) {
 
-        sortMenu = new JComboBox(Options.SortType.values());
+        sortMenu = new JComboBox<>(Options.SortType.values());
         JLabel sortLabel = new JLabel("Sort By: ");
         add(sortLabel);
         add(sortMenu);

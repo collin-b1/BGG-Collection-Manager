@@ -4,9 +4,11 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-/*
- * This is not the entry point to the Java application, go to the "Main" class
- */
+/*****************************
+ * This is not the entry point
+ * to the Java application,
+ * go to the "Main" class
+ *****************************/
 
 public class WindowMain extends JFrame {
 
@@ -15,7 +17,6 @@ public class WindowMain extends JFrame {
     private final Main instance;
 
     private final GamePanel gamePanel;
-    //private SideButtonPanel sideButtonPanel;
 
     public WindowMain(Main instance) {
         super("GameHub");
@@ -144,6 +145,6 @@ public class WindowMain extends JFrame {
     }
 
     public void setSortType(Options.SortType sortType) {
-        this.sortType = sortType;
+        WindowMain.sortType = sortType;
     }
 }
