@@ -3,6 +3,9 @@ import java.util.ArrayList;
 
 public class Main {
 
+    /**
+     * The loaded list of games
+     */
     private final ArrayList<BoardGame> gameList;
 
     public static void main(String[] args) {
@@ -19,8 +22,9 @@ public class Main {
         CSVReader reader = new CSVReader(path, gameList);
         try {
             reader.read();
-            System.out.println(gameList);
+            System.out.printf("Successfully loaded %d game(s) from file!%n", gameList.size());
         } catch (IOException e) {
+            System.out.println("Failed to load games from file!");
             e.printStackTrace();
         }
     }
